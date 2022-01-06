@@ -17,6 +17,12 @@ void *_realloc(void *ptr, size_t size)
 	current--;
 	old_size = current->stored;
 
+	if (old_size >= size)
+	{
+		current->stored = size;
+		return (ptr);
+	}
+
 	out = _malloc(size);
 	if (out == NULL)
 		return (NULL);
