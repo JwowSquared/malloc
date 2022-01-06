@@ -9,7 +9,7 @@
 */
 void *_calloc(size_t nmemb, size_t size)
 {
-	char *out, *temp;
+	char *out;
 
 	out = _malloc(nmemb * size);
 	if (out == NULL)

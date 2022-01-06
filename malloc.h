@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <unistd.h>
+#include <string.h>
 
 /**
 * struct malloc_header - stores info about malloc'd block
