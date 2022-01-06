@@ -13,6 +13,15 @@ void *_realloc(void *ptr, size_t size)
 	m_header *current;
 	size_t old_size;
 
+	if (ptr == NULL)
+		return (_malloc(size));
+
+	if (size == 0)
+	{
+		_free(ptr);
+		return (NULL);
+	}
+
 	current = (m_header *)ptr;
 	current--;
 	old_size = current->stored;
