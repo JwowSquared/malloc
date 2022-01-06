@@ -11,7 +11,7 @@ void *naive_malloc(size_t size)
 	static void *start;
 	static void *end;
 	static size_t avail_bytes;
-	size_t h_size = sizeof(size_t);
+	size_t h_size = sizeof(size_t), p_size = 4096;
 	void *out;
 
 	if (start == NULL)
@@ -19,9 +19,9 @@ void *naive_malloc(size_t size)
 
 	while (avail_bytes < size + h_size)
 	{
-		if (sbrk(1024) == (void *)-1)
+		if (sbrk(p_size) == (void *)-1)
 			return (NULL); /* not enough memory */
-		avail_bytes += 1024;
+		avail_bytes += p_size;
 	}
 
 	out = start;
