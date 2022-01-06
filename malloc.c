@@ -10,8 +10,9 @@ void *_malloc(size_t size)
 {
 	static char *start, *end;
 	static size_t avail_bytes;
-	size_t h_size = sizeof(size_t), p_size = 4096;
+	size_t h_size = sizeof(m_header), p_size = 4096;
 	char *out;
+	m_header *current;
 
 	if (start == NULL)
 		start = sbrk(0);
@@ -28,21 +29,22 @@ void *_malloc(size_t size)
 	out = start;
 	if (end != NULL)
 	{
-		while (out != end)
+		while (out <= end)
 		{
-			/* check previously malloc'd sections for viability */
-			out += h_size + *(size_t *)out;
+			current = (m_header *)out;
+			if (current->stored == 0)
+				break;
+			out += h_size + current->span;
 		}
-		if (out == end)
-		{
-			out += h_size + *(size_t *)out;
-			end = out;
-		}
+		end = out;
 	}
 	else
 		end = out;
 
-	*(size_t *)out = size;
+	current = (m_header *)out;
+	if (out == end)
+		current->span = size;
+	current->stored = size;
 	avail_bytes = avail_bytes - size - h_size;
 	return (out + h_size);
 }
