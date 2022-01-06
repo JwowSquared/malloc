@@ -6,7 +6,12 @@
 */
 void _free(void *ptr)
 {
-	m_header *target = (m_header *)ptr;
+	m_header *target;
+
+	if (ptr == NULL)
+		return;
+
+	target = (m_header *)ptr;
 
 	target--;
 
