@@ -17,11 +17,12 @@ void *_realloc(void *ptr, size_t size)
 	current--;
 	old_size = current->stored;
 
-	_free(ptr);
-
 	out = _malloc(size);
 	if (out == NULL)
 		return (NULL);
+	memcpy(out, ptr, old_size);
 
-	return (memcpy(out, ptr, old_size));
+	_free(ptr);
+
+	return (out);
 }
