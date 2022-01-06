@@ -31,7 +31,6 @@ void *_malloc(size_t size)
 		while (out != end)
 		{
 			/* check previously malloc'd sections for viability */
-			printf("TEST %d\n", (int)avail_bytes);
 			out += h_size + *(size_t *)out;
 		}
 		if (out == end)
