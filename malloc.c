@@ -12,7 +12,7 @@ void *_malloc(size_t size)
 	static size_t avail_bytes;
 	size_t h_size = sizeof(m_header), p_size = 4096;
 	char *out;
-	m_header *current;
+	m_header *current, *next;
 
 	size += 8 - size % 8;
 
@@ -26,8 +26,16 @@ void *_malloc(size_t size)
 	while (out < end)
 	{
 		current = (m_header *)out;
-		if (current->stored == 0 && current->span >= size)
+		if (current->stored == 0)
 			break;
+		if (current->span - current->stored >= size)
+		{
+			next = (m_header *)(out + current->stored + h_size);
+			next->span = current->span - current->stored - h_size;
+			current->span = current->stored;
+			out = (char *)next;
+			break;
+		}
 		out += h_size + current->span;
 	}
 
