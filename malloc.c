@@ -14,37 +14,36 @@ void *_malloc(size_t size)
 	char *out;
 	m_header *current;
 
-	if (start == NULL)
-		start = sbrk(0);
-
 	size += 8 - size % 8;
 
-	while (avail_bytes < size + h_size)
+	if (start == NULL)
 	{
-		if (sbrk(p_size) == (void *)-1)
-			return (NULL); /* not enough memory */
-		avail_bytes += p_size;
+		start = sbrk(0);
+		end = start;
 	}
 
 	out = start;
-	if (end != NULL)
+	while (out < end)
 	{
-		while (out <= end)
-		{
-			current = (m_header *)out;
-			if (current->stored == 0)
-				break;
-			out += h_size + current->span;
-		}
-		end = out;
+		current = (m_header *)out;
+		if (current->stored == 0 && current->span >= size)
+			break;
+		out += h_size + current->span;
 	}
-	else
-		end = out;
 
 	current = (m_header *)out;
 	if (out == end)
+	{
+		while (avail_bytes < size + h_size)
+		{
+			if (sbrk(p_size) == (void *)-1)
+				return (NULL); /* not enough memory */
+			avail_bytes += p_size;
+		}
 		current->span = size;
+		end = out + size + h_size;
+		avail_bytes = avail_bytes - size - h_size;
+	}
 	current->stored = size;
-	avail_bytes = avail_bytes - size - h_size;
 	return (out + h_size);
 }
